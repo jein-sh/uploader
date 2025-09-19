@@ -82,23 +82,18 @@ const fileStore = useFileStore()
 const files = computed(() => fileStore.files)
 const router = useRouter()
 
-import iconImage from '@/assets/img/icon-image.svg'
-import iconFilm from '@/assets/img/icon-film.svg'
-import iconFigma from '@/assets/img/icon-figma.svg'
-import iconFramer from '@/assets/img/icon-framer.svg'
-import iconFile from '@/assets/img/icon-file.svg'
-
 const getIcon = (file) => {
   const type = file.type.toLowerCase()
   const name = file.name.toLowerCase()
+  const base = import.meta.env.BASE_URL 
 
-  if (type.startsWith('image/')) return iconImage
-  if (type.startsWith('video/')) return iconFilm
+  if (type.startsWith('image/')) return base + 'img/icon-image.svg'
+  if (type.startsWith('video/')) return base + 'img/icon-film.svg'
 
-  if (name.endsWith('.fig')) return iconFigma
-  if (name.endsWith('.framerx')) return iconFramer
+  if (name.endsWith('.fig')) return base + 'img/icon-figma.svg'
+  if (name.endsWith('.framerx')) return base + 'img/icon-framer.svg'
 
-  return iconFile
+  return base + 'img/icon-file.svg'
 }
 
 onMounted(() => {
