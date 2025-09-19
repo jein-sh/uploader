@@ -82,6 +82,25 @@ const fileStore = useFileStore()
 const files = computed(() => fileStore.files)
 const router = useRouter()
 
+import iconImage from '@/assets/img/icon-image.svg'
+import iconFilm from '@/assets/img/icon-film.svg'
+import iconFigma from '@/assets/img/icon-figma.svg'
+import iconFramer from '@/assets/img/icon-framer.svg'
+import iconFile from '@/assets/img/icon-file.svg'
+
+const getIcon = (file) => {
+  const type = file.type.toLowerCase()
+  const name = file.name.toLowerCase()
+
+  if (type.startsWith('image/')) return iconImage
+  if (type.startsWith('video/')) return iconFilm
+
+  if (name.endsWith('.fig')) return iconFigma
+  if (name.endsWith('.framerx')) return iconFramer
+
+  return iconFile
+}
+
 onMounted(() => {
   fileStore.fetchFiles()
     if (files.value.length === 0) {
@@ -97,20 +116,6 @@ watch(files, (newFiles) => {
 
 const formatSize = (size) => size > 1024*1024 ? (size/1024/1024).toFixed(0)+' MB' : (size/1024).toFixed(0)+' KB'
 const formatDate = (date) => dayjs(date).format('MMM D, YYYY')
-
-const getIcon = (file) => {
-  const type = file.type.toLowerCase()
-  const name = file.name.toLowerCase()
-
-  if (type.startsWith('image/')) return '/img/icon-image.svg' 
-  if (type.startsWith('video/')) return '/img/icon-film.svg'
-
-  if (name.endsWith('.fig')) return '/img/icon-figma.svg'  
-  if (name.endsWith('.framerx')) return '/img/icon-framer.svg' 
-
-  return '/img/icon-file.svg' 
-}
-
 
 const downloadFile = async (file) => {
   try {
