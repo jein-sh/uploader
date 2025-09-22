@@ -23,12 +23,16 @@
           <div class="upload__text">Any assets used in projects will live here.<br> Start creating by uploading your files.</div>
         </div>
         <input id="input_file" type="file" multiple @change="onFileSelect" class="visually-hidden" />
-        <label for="input_file" class="btn">
+        <div v-if="fileStore.loading" class="loader"></div>
+        <label v-else for="input_file" class="btn">
           <span class="btn__icon">
             <inline-svg :src="uploadIcon" />
           </span>
           <span class="btn__text">Upload</span>
         </label>
+        <div v-if="fileStore.error" class="error">
+          {{ fileStore.error }}
+        </div>
       </div>
     </div>
   </main>
@@ -44,9 +48,6 @@ const uploadIcon = new URL('@/assets/svg/upload-cloud.svg', import.meta.url).hre
 const fileStore = useFileStore()
 const router = useRouter()
 
-const loading = ref(false)
-const error = ref(null)
-
 const onFileSelect = async (e) => {
   const files = e.target.files
   await uploadFiles(files)
@@ -58,19 +59,31 @@ const onDrop = async (e) => {
 }
 
 const uploadFiles = async (files) => {
-  loading.value = true
-  error.value = null
+  fileStore.loading = true
+  fileStore.error = null
   try {
     await fileStore.addFiles(Array.from(files))
     router.push('/files')
   } catch (err) {
-    error.value = err.message
+    fileStore.error = err.message
   } finally {
-    loading.value = false
+    fileStore.loading = false
   }
 }
 </script>
 <style scoped>
+  .loader {
+    width: 15px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    animation: l5 1s infinite linear alternate;
+  }
+  @keyframes l5 {
+      0%  {box-shadow: 20px 0 #7F56D9, -20px 0 #bcacdd;background: #7F56D9 }
+      33% {box-shadow: 20px 0 #7F56D9, -20px 0 #bcacdd;background: #bcacdd}
+      66% {box-shadow: 20px 0 #bcacdd,-20px 0 #7F56D9; background: #bcacdd}
+      100%{box-shadow: 20px 0 #bcacdd,-20px 0 #7F56D9; background: #7F56D9 }
+  }
   .upload {
     display: flex;
     flex-direction: column;
