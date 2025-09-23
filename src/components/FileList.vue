@@ -6,7 +6,7 @@
             <h1 class="title">Files uploaded</h1>
         </div>
         <div class="hesder__right">
-          <router-link class="btn" to="/">
+          <router-link class="btn" to="/upload">
               <span class="btn__icon">
                 <inline-svg :src="uploadIcon" />
               </span>
@@ -98,14 +98,11 @@ const getIcon = (file) => {
 
 onMounted(() => {
   fileStore.fetchFiles()
-    if (files.value.length === 0) {
-      router.push('/')
-    }
 })
 
 watch(files, (newFiles) => {
   if (newFiles.length === 0) {
-    router.push('/')
+    router.push('/upload')
   }
 })
 
@@ -131,7 +128,7 @@ const downloadFile = async (file) => {
     window.URL.revokeObjectURL(url)
   } catch (err) {
     console.error('Download failed:', err.message)
-  }
+  } 
 }
 
 const copyLink = async (url) => {

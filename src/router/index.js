@@ -3,8 +3,8 @@ import Upload from '@/components/Upload.vue'
 import FileList from '@/components/FileList.vue'
 
 const routes = [
-  { path: '/', component: Upload },
-  { path: '/files', component: FileList },
+  { path: '/', component: FileList },
+  { path: '/upload', component: Upload },
 ]
 
 export default createRouter({

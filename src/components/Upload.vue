@@ -3,7 +3,15 @@
       <div class="container">
           <div class="header__wrap">
               <div class="header__left">
-                  <router-link to="/files" class="title">My projects</router-link>
+                  <div class="title">My projects</div>
+              </div>
+              <div class="hesder__right" v-if="!isEmptyList">
+                <router-link class="btn" to="/">
+                    <span class="btn__text">Back to files</span>
+                    <span class="btn__icon">
+                      <inline-svg :src="arrowIcon" />
+                    </span>
+                </router-link>
               </div>
           </div>
       </div>
@@ -39,14 +47,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { useFileStore } from '@/stores/fileStore'
 import { useRouter } from 'vue-router'
 
 const uploadIcon = new URL('@/assets/svg/upload-cloud.svg', import.meta.url).href
+const arrowIcon = new URL('@/assets/svg/icon-arrow.svg', import.meta.url).href
 
 const fileStore = useFileStore()
 const router = useRouter()
+const isEmptyList = computed(() => fileStore.files.length === 0)
 
 const onFileSelect = async (e) => {
   const files = e.target.files
@@ -63,7 +73,7 @@ const uploadFiles = async (files) => {
   fileStore.error = null
   try {
     await fileStore.addFiles(Array.from(files))
-    router.push('/files')
+    router.push('/')
   } catch (err) {
     fileStore.error = err.message
   } finally {

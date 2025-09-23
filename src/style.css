@@ -140,6 +140,11 @@ html {
   transition: color 0.3s ease, background-color 0.3s ease;
 }
 
+.btn__icon svg{
+  width: 20px;
+  height: 20px;
+}
+
 .btn:hover {
   background-color:  #fff;
   color: #7F56D9;
