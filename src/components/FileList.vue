@@ -128,7 +128,9 @@ const downloadFile = async (file) => {
     window.URL.revokeObjectURL(url)
   } catch (err) {
     console.error('Download failed:', err.message)
-  } 
+  } finally {
+    openMenuFor.value = null
+  }
 }
 
 const copyLink = async (url) => {
@@ -137,10 +139,15 @@ const copyLink = async (url) => {
     alert('Link copied to clipboard!')
   } catch (err) {
     console.error('Failed to copy: ', err)
+  } finally {
+    openMenuFor.value = null
   }
 }
 
-const deleteFile = (file) => fileStore.deleteFile(file)
+const deleteFile = (file) => {
+  fileStore.deleteFile(file)
+  openMenuFor.value = null
+}
 
 const openMenuFor = ref(null)
 
