@@ -73,6 +73,8 @@ import { useFileStore } from '@/stores/fileStore'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'
 import { supabase } from '@/supabase'
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 const uploadIcon = new URL('@/assets/svg/upload-cloud.svg', import.meta.url).href
 const moreIcon = new URL('@/assets/svg/icon-more-vertical.svg', import.meta.url).href
 const downloadIcon = new URL('@/assets/svg/icon-download.svg', import.meta.url).href
@@ -126,8 +128,11 @@ const downloadFile = async (file) => {
     a.click()
     a.remove()
     window.URL.revokeObjectURL(url)
-  } catch (err) {
-    console.error('Download failed:', err.message)
+  } catch {
+    toast("Download failed!", {
+      autoClose: 1000,
+      type: "error",
+    });
   } finally {
     openMenuFor.value = null
   }
@@ -136,9 +141,14 @@ const downloadFile = async (file) => {
 const copyLink = async (url) => {
   try {
     await navigator.clipboard.writeText(url)
-    alert('Link copied to clipboard!')
-  } catch (err) {
-    console.error('Failed to copy: ', err)
+      toast("Link copied to clipboard!", {
+        autoClose: 1000,
+      });
+  } catch {
+      toast("Failed to copy!", {
+        autoClose: 1000,
+        type: "error",
+      });
   } finally {
     openMenuFor.value = null
   }

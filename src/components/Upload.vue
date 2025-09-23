@@ -50,6 +50,8 @@
 import { computed } from 'vue'
 import { useFileStore } from '@/stores/fileStore'
 import { useRouter } from 'vue-router'
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const uploadIcon = new URL('@/assets/svg/upload-cloud.svg', import.meta.url).href
 const arrowIcon = new URL('@/assets/svg/icon-arrow.svg', import.meta.url).href
@@ -75,6 +77,10 @@ const uploadFiles = async (files) => {
     await fileStore.addFiles(Array.from(files))
     router.push('/')
   } catch (err) {
+    toast("Upload failed!", {
+      autoClose: 1000,
+      type: "error",
+    });
     fileStore.error = err.message
   } finally {
     fileStore.loading = false
