@@ -53,11 +53,14 @@
                 </span>
                 <span class="link__text">Copy link</span>
               </button>
-              <button class="link" @click="deleteFile(file)">
+              <button class="link" @click="deleteFile(file)" :disabled="deletingFile === file.url">
                   <span class="link__icon">
-                    <inline-svg :src="deleteIcon" />
+                    <inline-svg v-if="deletingFile !== file.url" :src="deleteIcon" />
+                    <span v-else class="spinner"></span>
                   </span>
-                  <span class="link__text">Delete</span>
+                  <span class="link__text">
+                     {{ deletingFile === file.url ? 'Deleting...' : 'Delete' }}
+                  </span>
               </button>
             </div>
           </div>
@@ -68,7 +71,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, ref, onMounted, watch, onBeforeUnmount } from 'vue'
 import { useFileStore } from '@/stores/fileStore'
 import { useRouter } from 'vue-router'
 import dayjs from 'dayjs'
@@ -83,6 +86,8 @@ const linkIcon = new URL('@/assets/svg/icon-link.svg', import.meta.url).href
 const fileStore = useFileStore()
 const files = computed(() => fileStore.files)
 const router = useRouter()
+const deletingFile = ref(null)
+const openMenuFor = ref(null)
 
 const getIcon = (file) => {
   const type = file.type.toLowerCase()
@@ -98,8 +103,25 @@ const getIcon = (file) => {
   return base + 'img/icon-file.svg'
 }
 
+const handleClickOutside = (event) => {
+  const menu = event.target.closest('.file__menu')
+  const btn = event.target.closest('.file__btn')
+  if (!menu && !btn) {
+    openMenuFor.value = null
+  }
+}
+
+const toggleMenu = (fileUrl) => {
+  openMenuFor.value = openMenuFor.value === fileUrl ? null : fileUrl
+}
+
 onMounted(() => {
   fileStore.fetchFiles()
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 
 watch(files, (newFiles) => {
@@ -154,15 +176,22 @@ const copyLink = async (url) => {
   }
 }
 
-const deleteFile = (file) => {
-  fileStore.deleteFile(file)
-  openMenuFor.value = null
-}
-
-const openMenuFor = ref(null)
-
-const toggleMenu = (fileUrl) => {
-  openMenuFor.value = openMenuFor.value === fileUrl ? null : fileUrl
+const deleteFile = async (file) => {
+  try {
+    deletingFile.value = file.url
+    await fileStore.deleteFile(file)
+    toast("File deleted!", { 
+      autoClose: 1000, 
+    })
+  } catch (err) {
+      toast("Failed to deleting!", {
+        autoClose: 1000,
+        type: "error",
+      });
+  } finally {
+    deletingFile.value = null
+    openMenuFor.value = null
+  }
 }
 </script>
 

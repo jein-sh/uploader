@@ -213,6 +213,16 @@ html {
   justify-content: space-between;
 }
 
-.error {
-  color: red;
+.spinner {
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

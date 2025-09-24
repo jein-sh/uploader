@@ -38,9 +38,6 @@
           </span>
           <span class="btn__text">Upload</span>
         </label>
-        <div v-if="fileStore.error" class="error">
-          {{ fileStore.error }}
-        </div>
       </div>
     </div>
   </main>
@@ -72,7 +69,6 @@ const onDrop = async (e) => {
 
 const uploadFiles = async (files) => {
   fileStore.loading = true
-  fileStore.error = null
   try {
     await fileStore.addFiles(Array.from(files))
     router.push('/')
@@ -81,7 +77,6 @@ const uploadFiles = async (files) => {
       autoClose: 1000,
       type: "error",
     });
-    fileStore.error = err.message
   } finally {
     fileStore.loading = false
   }
